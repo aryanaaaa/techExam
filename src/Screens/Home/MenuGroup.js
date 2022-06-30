@@ -1,11 +1,13 @@
 import React from 'react';
-import { RadioEl } from "./RadioEl";
 
 import {
+  Text,
   View,
 } from 'react-native';
 
-export function RadioGroup(props) {
+import { RadioButton } from '../../components';
+
+export default function MenuGroup(props) {
   const { menuGroup, menuIndx, inputRules, answers, onSelectMenu } = props;
   const handleOnMenuSelect = (value) => {
     onSelectMenu({ menuIndx, value });
@@ -22,17 +24,18 @@ export function RadioGroup(props) {
   const evalIfChecked = (answers, menuIndx) => {
     return !("undefined" === typeof answers[menuIndx]);
   };
+
   return (
     <View key={menuIndx}>
       {menuGroup.map((menuObj, menuItemIndex) => {
         evalIfChecked(answers);
         return (
-          <RadioEl
-            key={`${menuItemIndex}-what`}
-            menuObj={menuObj}
-            menuObjIndx={menuItemIndex}
-            parentIdx={menuIndx}
-            onSelectItem={handleOnMenuSelect}
+          <RadioButton
+            key={`${menuObj.id}+${menuItemIndex}`}
+            id={`${menuObj.id}-${menuItemIndex}`}
+            title={menuObj.value}
+            onChange={() => handleOnMenuSelect(menuObj.id)}
+            isSelected={answers[menuIndx] === menuObj.id}
             disabled={
               0 !== menuIndx
                 ? "undefined" === typeof inputRules[menuIndx]
@@ -40,7 +43,6 @@ export function RadioGroup(props) {
                   : evalRules(inputRules, parseInt(menuObj.id))
                 : false
             }
-            answers={answers}
           />
         );
       })}
